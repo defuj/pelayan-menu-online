@@ -23,6 +23,22 @@ const TransactionHistory = React.memo(() => {
     const [currentPage, setCurrentPage] = useState(1);
     const masterData = useRef<HistoryModel[]>([]);
 
+    const logout = () => {
+        Swal.fire({
+            title: 'Keluar dari akun?',
+            text: "Anda akan keluar dari akun ini",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya, keluar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
+        })
+    }
+
     interface HistoryProps {
         history : HistoryModel
     }
@@ -59,7 +75,7 @@ const TransactionHistory = React.memo(() => {
 
     const HistoryItem = ({history} : HistoryProps) => {
         return (
-            <a onClick={() => {}} href="#" className="product-items d-flex w-100 flex-row" key={history.code}>
+            <Link to={`trx/${history.code}`} className="product-items d-flex w-100 flex-row" key={history.code}>
                 <p className={history.status === false ? 'caption m-0 text-product-badge-new' : 'caption m-0 text-product-badge'}>{history.status === false ? 'Belum Selesai' : 'Selesai'}</p>
                 <span className="my-auto mr-3 pt-3">
                     <i className="fi fi-sr-receipt headline4 color-green500"></i>
@@ -69,7 +85,7 @@ const TransactionHistory = React.memo(() => {
                     <p className="caption color-green800 max-line-2 mx-0 my-0">{history.chair}</p>
                 </div>
                 <i className="fi fi-sr-angle-right bodytext2 color-green900 my-auto"></i>
-            </a>
+            </Link>
         );
     };
 
@@ -166,7 +182,7 @@ const TransactionHistory = React.memo(() => {
 
     return (
         <>
-        {!starting && <Navigation notifCount={notifCount} onSearch={searchMenu} isSearching={isSearching}/>}
+        {!starting && <Navigation notifCount={notifCount} onSearch={searchMenu} isSearching={isSearching} onLoggout={logout}/>}
         <main role="main" className="container-fluid col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 pt-0 pl-0 pr-0">
             {!starting && 
             <div className="section-product w-100">
@@ -179,12 +195,13 @@ const TransactionHistory = React.memo(() => {
                     </h1>
                     {keyword === '' && 
                     <p className="headline6 color-green900 px-0 m-0">
-                        Menampilkan riwayat pesanan hari ini
+                        {/* Menampilkan riwayat pesanan hari ini */}
+                        {masterData.current.length === 0 ? '_' : masterData.current.length} Riwayat transaksi ditemukan
                     </p>
                     }
                     {keyword !== '' &&
                     <p className="headline6 color-green900 px-0 m-0">
-                        {history.length} hasil untuk kata kunci “<span className="color-green500 semibold px-0 m-0">{keyword}</span>”
+                        {masterData.current.length} hasil untuk kata kunci “<span className="color-green500 semibold px-0 m-0">{keyword}</span>”
                     </p>
                     }
                     
