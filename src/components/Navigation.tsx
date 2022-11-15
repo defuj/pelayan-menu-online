@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 interface Props {
     notifCount? : number;
     onSearch? : Function;
+    onLoggout? : Function;
     isSearching? : boolean;
 }
-const Navigation = ({notifCount = 0, onSearch = () => {}, isSearching = false}: Props) => {
+const Navigation = ({notifCount = 0, onSearch = () => {}, isSearching = false, onLoggout = () => {}}: Props) => {
     const search = useRef('');
 
     const handleSearch = (e: React.FormEvent) => {
@@ -33,7 +34,7 @@ const Navigation = ({notifCount = 0, onSearch = () => {}, isSearching = false}: 
                             <i className="fi fi-rr-bell color-black300 headline4"></i>
                             {notifCount > 0 && <span className="badge-cart badge badge-pill background-green500 caption semibold text-white text-center">{notifCount > 99 ? '99+' : notifCount}</span>}
                         </Link>
-                        <a title="keluar" href="#" className="h-100 d-flex align-items-center justify-content-center ml-3 text-decoration-none" style={{width: '48px'}}>
+                        <a onClick={() => onLoggout()} title="keluar" href="#" className="h-100 d-flex align-items-center justify-content-center ml-3 text-decoration-none" style={{width: '48px'}}>
                             <i className="fi fi-rr-sign-out-alt color-black300 headline4"></i>
                         </a>
                         
