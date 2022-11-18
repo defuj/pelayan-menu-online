@@ -346,6 +346,15 @@ input.middle:focus {
 	padding: 12px;
 }
 
+.container-login {
+	background: #f5f5f5;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
 .container-product .cart-items {
 	box-shadow: 0px 0px 6px rgba(38, 50, 56, 0.1);
 	background-color: #fff;
@@ -649,7 +658,10 @@ input.middle:focus {
 }
 
 .container-form {
-	/* border-radius: 16px; */
+	background: #ffffff;
+	box-shadow: 0px 2px 20px rgba(33, 39, 64, 0.1);
+	border-radius: 8px;
+	max-width: 300px;
 }
 
 .product-section-payment img {
@@ -1064,4 +1076,16 @@ input.middle:focus {
 .content-qty input::-ms-input-placeholder {
 	/* Microsoft Edge */
 	color: #757778;
+}
+
+.container-customer {
+	background: #ffffff;
+	border-radius: 12px;
+	box-shadow: 0px 4px 10px rgba(47, 47, 46, 0.1);
+}
+
+.item-cart {
+	background: #ffffff;
+	border-radius: 12px;
+	box-shadow: 0px 4px 10px rgba(47, 47, 46, 0.1);
 }

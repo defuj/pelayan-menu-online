@@ -75,7 +75,7 @@ const TransactionHistory = React.memo(() => {
 
     const HistoryItem = ({history} : HistoryProps) => {
         return (
-            <Link to={`trx/${history.code}`} className="product-items d-flex w-100 flex-row" key={history.code}>
+            <Link to={`trx/${history.code}`} className="product-items d-flex flex-row" key={history.code}>
                 <p className={history.status === false ? 'caption m-0 text-product-badge-new' : 'caption m-0 text-product-badge'}>{history.status === false ? 'Belum Selesai' : 'Selesai'}</p>
                 <span className="my-auto mr-3 pt-3">
                     <i className="fi fi-sr-receipt headline4 color-green500"></i>

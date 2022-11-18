@@ -1,10 +1,7 @@
 export default interface CartModel{
     id: number;
-    nama: string;
-    harga: string;
-    deskripsi: string;
-    cover: Array<string>;
-    badge: string;
+    name: string;
+    price: number;
     qty: number;
     note: string;
 }
