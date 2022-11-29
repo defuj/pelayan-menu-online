@@ -424,7 +424,7 @@ const TransactionDetail = () => {
                         Batalkan Pesanan
                     </button>
                     }
-                    <button disabled={menu.filter((item) => item.qty > 0).length > 0 && trx.accepted ? true : false} onClick={() => confirmTransaction()} className="mt-2 button-message w-100 flex-fill bodytext2 semibold text-white text-center background-green500" type="button">
+                    <button disabled={menu.filter((item) => item.qty > 0).length > 0 ? false : true} onClick={() => confirmTransaction()} className="mt-2 button-message w-100 flex-fill bodytext2 semibold text-white text-center background-green500" type="button">
                         Konfirmasi
                     </button>
                 </div>}
