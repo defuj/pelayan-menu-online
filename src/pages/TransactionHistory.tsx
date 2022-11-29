@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../components/Loading";
-import defaultImageProfile from '../assets/icons/default-image-profile.svg';
 import EmptyState from "../components/EmptyState";
-import ImageSliderNav from "../components/ImageSliderNav";
-import Footer from "../components/Footer";
 import Navigation from "../components/Navigation";
 import Swal from "sweetalert2";
 import HistoryModel from "../models/HistoryModel";
+import ResultSearchShimmer from "../components/shimmer/ResultSeachShimmer";
+import HistoryItemShimmer from "../components/shimmer/HistoryShimmer";
 
 const TransactionHistory = React.memo(() => {
     const [starting, setStarting] = useState(true);
     const [isSearching, setIsSearching] = useState(false);
     const [notifCount, setNotifCount] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [onLoadMore, setOnLoadMore] = useState(false);
     const [keyword, setKeyword] = useState('');
     const [minHeight, setMinHeight] = useState('400px');
@@ -45,32 +44,35 @@ const TransactionHistory = React.memo(() => {
 
     const searchMenu = (keyword : string) => {
         setKeyword(keyword);
+        setLoading(true);
         setIsSearching(true);
 
-        if(keyword !== ''){
-            // create 100 sample data history
-            let historyData : HistoryModel[] = [];
-            for (let i = 0; i < 100; i++) {
-                historyData.push({
-                    code: 'TRX-000' + i,
-                    status: i % 2 === 0 ? true : false,
-                    chair: 'Kursi ' + i,
-                    name: 'Nama ' + i
+        setTimeout(() => {
+            if(keyword !== ''){
+                // create 100 sample data history
+                let historyData : HistoryModel[] = [];
+                for (let i = 0; i < 100; i++) {
+                    historyData.push({
+                        code: 'TRX-000' + i,
+                        status: i % 2 === 0 ? true : false,
+                        chair: 'Kursi ' + i,
+                        name: 'Nama ' + i
+                    });
+                }
+    
+                const result = historyData.filter((item) => {
+                    return item.code.toLowerCase().includes(keyword.toLowerCase()) || item.chair.toLowerCase().includes(keyword.toLowerCase()) || item.name.toLowerCase().includes(keyword.toLowerCase());
                 });
+    
+                manageData(result);
+                setLoading(false);
+                setIsSearching(false);
+            }else{
+                getHistory();
+                setLoading(true);
+                setIsSearching(false);
             }
-
-            const result = historyData.filter((item) => {
-                return item.code.toLowerCase().includes(keyword.toLowerCase()) || item.chair.toLowerCase().includes(keyword.toLowerCase()) || item.name.toLowerCase().includes(keyword.toLowerCase());
-            });
-
-            manageData(result);
-            setLoading(false);
-            setIsSearching(false);
-        }else{
-            getHistory();
-            setLoading(true);
-            setIsSearching(false);
-        }
+        }, 2000);
     }
 
     const HistoryItem = ({history} : HistoryProps) => {
@@ -99,7 +101,7 @@ const TransactionHistory = React.memo(() => {
                 historyData.push({
                     code: 'TRX-000' + i,
                     status: i % 2 === 0 ? true : false,
-                    chair: 'Kursi ' + i,
+                    chair: 'Meja ' + i,
                     name: 'Nama ' + i
                 });
             }
@@ -162,6 +164,14 @@ const TransactionHistory = React.memo(() => {
     }
 
     window.onscroll = () => loadOnScroll();
+
+    const range = (from : number, to :number) => {
+        let result = [];
+        for(var i = from; i <= to; i++) {
+          result.push(i);
+        }
+        return result;
+      }
     
     useEffect(() => {
         if(starting){
@@ -182,9 +192,8 @@ const TransactionHistory = React.memo(() => {
 
     return (
         <>
-        {!starting && <Navigation notifCount={notifCount} onSearch={searchMenu} isSearching={isSearching} onLoggout={logout}/>}
-        <main role="main" className="container-fluid col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 pt-0 pl-0 pr-0">
-            {!starting && 
+        <Navigation notifCount={notifCount} onSearch={searchMenu} isSearching={isSearching} onLoggout={logout}/>
+        <main role="main" className="container-fluid col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 pt-0 pl-0 pr-0" style={{marginBottom: '77px'}}>
             <div className="section-product w-100">
                 <div className="product-divider w-100">
                 </div>
@@ -195,8 +204,12 @@ const TransactionHistory = React.memo(() => {
                     </h1>
                     {keyword === '' && 
                     <p className="headline6 color-green900 px-0 m-0">
-                        {/* Menampilkan riwayat pesanan hari ini */}
-                        {masterData.current.length === 0 ? '_' : masterData.current.length} Riwayat transaksi ditemukan
+                        {loading && isSearching && 'Mencari Riwayat Pesanan ...'}
+                        {loading && !isSearching && 'Memuat Riwayat Pesanan ...'}
+                        {!loading && 
+                        <>
+                        {masterData.current.length === 0 ? 'Tidak menemukan riwayat pesanan' : `${masterData.current.length} Riwayat pesanan ditemukan`}
+                        </>}
                     </p>
                     }
                     {keyword !== '' &&
@@ -204,30 +217,31 @@ const TransactionHistory = React.memo(() => {
                         {masterData.current.length} hasil untuk kata kunci “<span className="color-green500 semibold px-0 m-0">{keyword}</span>”
                     </p>
                     }
-                    
                 </div>
-                
-                {loading && <Loading height={`${window.innerHeight-161}px`}/>}
 
                 {!loading && history.length === 0 && 
                 <EmptyState minHeight={minHeight} desc={keyword !== '' ? 
                     `Maaf “<span class="color-green500 semibold px-0 m-0">${keyword}</span>” tidak ditemukan coba gunakan kata kunci lain.` : 
                     'Belum ada pesanan hari ini'}/>}
 
-                {!loading && history.length > 0 &&
-                    <>
-                    <div id="container-product" className="container-product d-flex flex-column px-3">
-                        {!loading && history.length > 0 && history.map((history : HistoryModel,index : number) => <HistoryItem history={history} key={`history-${index}`}/>)}
-                    </div>
-                    {onLoadMore && <Loading height="100px"/>}
-                    </>
-                }
+                <div id="container-product" className="container-product d-flex flex-column px-3">
+                    {loading && range(0, 5).map((index) => <HistoryItemShimmer key={index}/>)}
+                    {!loading && history.length > 0 && history.map((history : HistoryModel,index : number) => <HistoryItem history={history} key={`history-${index}`}/>)}
+                </div>
+                {onLoadMore && <Loading height="100px"/>}
                 
             </div>
-            }
 
             {starting && <Loading height={`${window.innerHeight}px`}/>}
         </main>
+        {!starting && !loading && 
+        <div className="container-checkout-cart justify-content-center py-3 px-3 d-flex fixed-bottom bg-white col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 m-auto flex-column">
+            <Link to="trx" className="text-decoration-none button-message w-100 bodytext2 semibold text-white text-center background-green500" type="button">
+                Tambah Pesanan
+            </Link>
+        </div>
+        }
+        
         </>
     )
 })

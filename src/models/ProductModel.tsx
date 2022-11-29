@@ -1,8 +1,7 @@
 export default interface ProductModel{
     id: number;
-    nama: string;
-    harga: number;
-    deskripsi: string;
-    cover: string;
-    badge: string;
+    name: string;
+    price: number;
+    qty: number;
+    note: string;
 }
